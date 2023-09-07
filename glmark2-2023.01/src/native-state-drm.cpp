@@ -142,6 +142,7 @@ NativeStateDRM::flip()
 
     if (pending_bo_)
         gbm_surface_release_buffer(surface_, pending_bo_);
+    // 获取 surface 中的前端帧
     pending_bo_ = gbm_surface_lock_front_buffer(surface_);
 
     DRMFBState* pending_fb = fb_get_from_bo(pending_bo_);
@@ -163,12 +164,15 @@ NativeStateDRM::flip()
         /* When not using async flips, i.e., mailbox-like presentation,
          * and the flip is still not done, we can continue potentially
          * without flipping. */
+        // 看看是否可以添加页
         check_for_page_flip(0);
     }
 
     /* If a flip is not in progress we can schedule another one. */
+    // 如果没有进行翻转，我们可以安排另一个翻转。
     if (!flipped_bo_) {
         if (!crtc_set_) {
+            // 设置一下 crtc
             int status = drmModeSetCrtc(fd_, encoder_->crtc_id, pending_fb->fb_id, 0, 0,
                                         &connector_->connector_id, 1, mode_);
             if (status >= 0) {
@@ -184,7 +188,7 @@ NativeStateDRM::flip()
             }
             return;
         }
-
+        // 提交帧申请,并获取下一次申请时机
         uint32_t flip_flags = DRM_MODE_PAGE_FLIP_EVENT;
         if (use_async_flip_)
             flip_flags |= DRM_MODE_PAGE_FLIP_ASYNC;
@@ -202,6 +206,7 @@ NativeStateDRM::flip()
 
     /* We need to ensure our surface has a free buffer, otherwise GL will
      * have no buffer to render on. */
+    // 我们需要确保我们的表面有一个自由的缓冲区，否则GL将没有缓冲区可以渲染。
     while (!gbm_surface_has_free_buffers(surface_) &&
            check_for_page_flip(-1) >= 0)
     {

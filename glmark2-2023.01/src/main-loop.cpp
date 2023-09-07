@@ -64,8 +64,10 @@ MainLoop::step()
     /* Find the next normal scene */
     if (!scene_) {
         /* Find a normal scene */
+        // 找到下一次执行的 scene
         while (bench_iter_ != benchmarks_.end()) {
             scene_ = &(*bench_iter_)->scene();
+            printf("\ndl-debug[%s] : exec scene=%s\n", __func__, scene_->name().c_str());
 
             /* 
              * Scenes with empty names are option-setting scenes.
@@ -118,6 +120,7 @@ MainLoop::step()
             score_ += scene_->average_fps();
             benchmarks_run_++;
         }
+        // 输出结果
         log_scene_result();
         scene_ = 0;
         next_benchmark();
@@ -171,6 +174,7 @@ MainLoop::log_scene_result()
 
     if (scene_setup_status_ == SceneSetupStatusSuccess) {
         Scene::Stats stats = scene_->stats();
+        printf("\ndl-debug[%s] : results=%d\n", __func__, Options::results);
 
         if (Options::results & Options::ResultsFps)
         {

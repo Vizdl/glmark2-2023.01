@@ -66,7 +66,7 @@ private:
     bool init();
     void cleanup();
     int check_for_page_flip(int timeout_ms);
-
+    // drm fd
     int fd_;
     drmModeRes* resources_;
     drmModeConnector* connector_;
@@ -74,10 +74,15 @@ private:
     drmModeCrtcPtr crtc_;
     drmModeModeInfo* mode_;
     gbm_device* dev_;
+    // 渲染结果,内部有多个 buffer,用来做缓冲。
     gbm_surface* surface_;
+    // 等待排队的帧
     gbm_bo* pending_bo_;
+    // 正在排队的帧
     gbm_bo* flipped_bo_;
+    // 已经显示过的帧
     gbm_bo* presented_bo_;
+    // 是否设置过 crtc
     bool crtc_set_;
     bool use_async_flip_;
 };
