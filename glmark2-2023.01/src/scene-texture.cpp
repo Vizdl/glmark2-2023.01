@@ -113,10 +113,15 @@ SceneTexture::setup()
     static const LibMatrix::vec4 materialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 
     // Create texture according to selected filtering
+    /**
+     * 创建纹理根据选择的过滤器
+     */
     GLint min_filter = GL_NONE;
     GLint mag_filter = GL_NONE;
     const std::string &filter = options_["texture-filter"].value;
-
+    /**
+     * 设置 gl 纹理过滤器
+     */
     if (filter == "nearest") {
         min_filter = GL_NEAREST;
         mag_filter = GL_NEAREST;

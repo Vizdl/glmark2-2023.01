@@ -93,6 +93,7 @@ protected:
     void next_benchmark();
     Canvas &canvas_;
     Scene *scene_;
+    // 所有的基准测试
     const std::vector<Benchmark *> &benchmarks_;
     unsigned int score_;
     unsigned int benchmarks_run_;

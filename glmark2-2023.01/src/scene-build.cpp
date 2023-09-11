@@ -32,6 +32,7 @@
 #include "util.h"
 #include <cmath>
 
+// build 测试
 SceneBuild::SceneBuild(Canvas &pCanvas) :
     Scene(pCanvas, "build"),
     orientModel_(false)
@@ -85,8 +86,9 @@ SceneBuild::setup()
     using LibMatrix::vec3;
 
     /* Set up shaders */
-    static const std::string vtx_shader_filename(Options::data_path + "/shaders/light-basic.vert");
-    static const std::string frg_shader_filename(Options::data_path + "/shaders/light-basic.frag");
+    // 设置着色器
+    static const std::string vtx_shader_filename(Options::data_path + "/shaders/light-basic.vert"); // 顶点?
+    static const std::string frg_shader_filename(Options::data_path + "/shaders/light-basic.frag"); // 这是什么
     static const LibMatrix::vec4 lightPosition(20.0f, 20.0f, 10.0f, 1.0f);
     static const LibMatrix::vec4 materialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -95,20 +97,34 @@ SceneBuild::setup()
 
     vtx_source.add_const("LightSourcePosition", lightPosition);
     vtx_source.add_const("MaterialDiffuse", materialDiffuse);
-
+    // 加载
     if (!Scene::load_shaders_from_strings(program_, vtx_source.str(),
                                           frg_source.str()))
     {
         return false;
     }
-
+    // 构建 model
     Model model;
     const std::string& whichModel(options_["model"].value);
     bool modelLoaded = model.load(whichModel);
 
     if(!modelLoaded)
         return false;
-
+    //现在我们已经成功加载了，关于
+    //我们需要考虑的一些已知模型。平局
+    //场景的逻辑想要围绕Y轴旋转模型。
+    //我们的大多数模型都是这样描述的。有些需要调整
+    //（使模型进入正确位置的额外旋转
+    //方位）。
+    //
+    //以下是摘要：
+    //
+    //Angel绕Y轴旋转
+    //Armadillo绕Y轴旋转
+    //佛祖绕X轴旋转
+    //兔子绕Y轴旋转
+    //Dragon绕X轴旋转
+    //马绕Y轴旋转
     // Now that we're successfully loaded, there are a few quirks about
     // some of the known models that we need to account for.  The draw
     // logic for the scene wants to rotate the model around the Y axis.
@@ -157,7 +173,7 @@ SceneBuild::setup()
 
     mesh_.vbo_update_method(Mesh::VBOUpdateMethodMap);
     mesh_.interleave(interleave);
-
+    printf("dl-debug[%s], model[%s] useVbo[%d] interleave[%d]\n", __func__, options_["model"].value.c_str(), useVbo_, interleave);
     if (useVbo_)
         mesh_.build_vbo();
     else

@@ -58,6 +58,12 @@ MainLoop::score()
         return score_;
 }
 
+/**
+ * 这个函数在一次 scene 中会被多次调用
+ * 如若没有 scene,则加载。
+ * 如若正在运行,则画图。
+ * 如若已经结束,则输出结果并切换到下个 scene。 
+ */
 bool
 MainLoop::step()
 {
@@ -67,7 +73,7 @@ MainLoop::step()
         // 找到下一次执行的 scene
         while (bench_iter_ != benchmarks_.end()) {
             scene_ = &(*bench_iter_)->scene();
-            printf("\ndl-debug[%s] : exec scene=%s\n", __func__, scene_->name().c_str());
+            printf("dl-debug[%s] : exec scene=%s\n", __func__, scene_->name().c_str());
 
             /* 
              * Scenes with empty names are option-setting scenes.
@@ -107,6 +113,9 @@ MainLoop::step()
 
     bool should_quit = canvas_.should_quit();
 
+    /**
+     * 如若 scene 正在运行且不需要停止
+     */
     if (scene_ ->running() && !should_quit)
         draw();
 

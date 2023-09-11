@@ -353,7 +353,7 @@ ShadowPrivate::setup(map<string, Scene::Option>& options)
     bool interleave = (options["interleave"].value == "true");
     mesh_.vbo_update_method(Mesh::VBOUpdateMethodMap);
     mesh_.interleave(interleave);
-
+    printf("dl-debug[%s], useVbo[%d] interleave[%d]\n", __func__, useVbo_, interleave);
     if (useVbo_) {
         mesh_.build_vbo();
     }
